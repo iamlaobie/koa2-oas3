@@ -1,10 +1,13 @@
 'use strict';
 
-const apiMergeRemoteRefs = require('oas3-remote-refs');
+const apiMergeRemoteRefs = require('@overspeed/oas3-remote-refs');
 const koaSwagger = require('koa2-swagger-ui');
 const { oas } = require('./src/oas3-koa-mw');
 
-exports.Koa2OA3 = async function (app, apiSpecUri, options = {
+// Exports
+module.exports = Koa2OA3;
+
+async function Koa2OA3 (app, apiSpecUri, options = {
   mergeRefs: true,
   ui: true
 }) {
@@ -12,7 +15,7 @@ exports.Koa2OA3 = async function (app, apiSpecUri, options = {
   const apiSpec = await apiMergeRemoteRefs(apiSpecUri);
   // apply ui layer
   app.use(koaSwagger({
-    title: apiSpec.info.title,
+    // title: apiSpec.info.title,
     hideTopbar: true,
     swaggerOptions: {
       url: apiSpecUri
@@ -20,4 +23,4 @@ exports.Koa2OA3 = async function (app, apiSpecUri, options = {
   }));
   // apply request validation
   app.use(oas(apiSpec));
-};
+}

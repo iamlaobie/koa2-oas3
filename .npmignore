@@ -1,0 +1,6 @@
+yarn.lock
+.env
+.editorconfig
+.eslintrc.yml
+.nvmrc
+test

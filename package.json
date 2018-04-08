@@ -1,5 +1,5 @@
 {
-  "name": "koa2-oas3",
+  "name": "@overspeed/koa2-oas3",
   "version": "0.0.1",
   "description": "Koa2 OpenAPI 3 request validation middleware.",
   "main": "index.js",
@@ -19,6 +19,9 @@
     "nsp": "^3.2.1"
   },
   "dependencies": {
+    "@overspeed/oas3-remote-refs": "^0.0.1",
+    "koa": "^2.5.0",
+    "koa-route": "^3.2.0",
     "koa2-swagger-ui": "^2.8.1",
     "oas3-chow-chow": "^0.4.0"
   }

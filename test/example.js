@@ -1,10 +1,5 @@
-# OpenAPI 3 Koa 2 Request Validation Middleware
+const koa2Oas3 = require('../');
 
-[![JavaScript Style Guide](https://cdn.rawgit.com/standard/standard/master/badge.svg)](https://github.com/standard/standard)
-
-## Usage
-```javascript
-const koa2Oas3 = require('@overspeed/koa2-oas3');
 const _ = require('koa-route');
 const Koa = require('koa');
 const app = new Koa();
@@ -23,4 +18,3 @@ koa2Oas3(app, 'https://api.swaggerhub.com/apis/overspeedio/Koa2Oas3Example/1.0.0
   .catch((e) => {
     console.error(e);
   });
-```
