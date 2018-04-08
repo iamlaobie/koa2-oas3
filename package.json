@@ -19,7 +19,7 @@
     "nsp": "^3.2.1"
   },
   "dependencies": {
-    "@overspeed/oas3-remote-refs": "^0.0.1",
+    "@overspeed/oas3-remote-refs": "^0.0.2",
     "koa": "^2.5.0",
     "koa-route": "^3.2.0",
     "koa2-swagger-ui": "^2.8.1",

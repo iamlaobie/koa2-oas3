@@ -16,9 +16,9 @@
     esutils "^2.0.2"
     js-tokens "^3.0.0"
 
-"@overspeed/oas3-remote-refs@^0.0.1":
-  version "0.0.1"
-  resolved "https://registry.yarnpkg.com/@overspeed/oas3-remote-refs/-/oas3-remote-refs-0.0.1.tgz#90aff4fcd8161164c2e948786a93acf58296b991"
+"@overspeed/oas3-remote-refs@^0.0.2":
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/@overspeed/oas3-remote-refs/-/oas3-remote-refs-0.0.2.tgz#a28febe0bd2cb7909abfacbcce33d233efcc5850"
   dependencies:
     lodash "^4.17.5"
     request "^2.85.0"
