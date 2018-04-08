@@ -16,12 +16,12 @@
     "eslint-plugin-node": "^6.0.1",
     "eslint-plugin-promise": "^3.7.0",
     "eslint-plugin-standard": "^3.0.1",
-    "nsp": "^3.2.1"
+    "nsp": "^3.2.1",
+    "koa": "^2.5.0",
+    "koa-route": "^3.2.0"
   },
   "dependencies": {
     "@overspeed/oas3-remote-refs": "^0.0.2",
-    "koa": "^2.5.0",
-    "koa-route": "^3.2.0",
     "koa2-swagger-ui": "^2.8.1",
     "oas3-chow-chow": "^0.4.0"
   }
