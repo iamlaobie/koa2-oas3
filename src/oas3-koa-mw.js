@@ -6,7 +6,7 @@ const {
 exports.oas = function oas (apiSpec, config) {
   const compiled = new ChowChow(apiSpec);
 
-  return (ctx, next) => {
+  return async (ctx, next) => {
     try {
       compiled.validateRequest(ctx.path, {
         method: ctx.request.method,
@@ -42,6 +42,6 @@ exports.oas = function oas (apiSpec, config) {
       }
     }
 
-    next();
+    await next();
   };
 };

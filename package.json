@@ -1,6 +1,6 @@
 {
   "name": "@overspeed/koa2-oas3",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Koa2 OpenAPI 3 request validation middleware.",
   "main": "index.js",
   "repository": "git@github.com:OverSpeedIO/koa2-oas3.git",
