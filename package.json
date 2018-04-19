@@ -1,6 +1,6 @@
 {
   "name": "@overspeed/koa2-oas3",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Koa2 OpenAPI 3 request validation middleware.",
   "main": "index.js",
   "repository": "git@github.com:OverSpeedIO/koa2-oas3.git",
@@ -26,6 +26,7 @@
     "lodash": "^4.17.5",
     "oas3-chow-chow": "^0.4.0",
     "request-promise": "^4.2.2",
-    "request-promise-native": "^1.0.5"
+    "request-promise-native": "^1.0.5",
+    "url-join": "^4.0.0"
   }
 }

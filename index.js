@@ -3,33 +3,46 @@
 const apiMergeRemoteRefs = require('@overspeed/oas3-remote-refs');
 const koaSwagger = require('koa2-swagger-ui');
 const rpn = require('request-promise-native');
-const { isObject } = require('lodash');
+const { isObject, isString } = require('lodash');
+const route = require('koa-route');
+const urlJoin = require('url-join');
 const { oas } = require('./src/oas3-koa-mw');
 
 // Exports
-module.exports = Koa2OA3;
+module.exports = koa2OA3;
 
 // These are the default options for Koa2OA3
 const defaultOptions = {
-  mergeRemoteRefs: true,
-  renderDocs: true
+  mergeRemoteRefs: false,
+  renderDocs: true,
+  docsPath: '/docs'
 };
+
+/**
+ * Validate URI
+ * @param {String} value
+ */
+function validateUrl (value) {
+  if (isString(value)) {
+    return /^(?:(?:(?:https?|ftp):)?\/\/)(?:\S+(?::\S*)?@)?(?:(?!(?:10|127)(?:\.\d{1,3}){3})(?!(?:169\.254|192\.168)(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)(?:\.(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)*(?:\.(?:[a-z\u00a1-\uffff]{2,})))(?::\d{2,5})?(?:[/?#]\S*)?$/i.test(value);
+  }
+}
 
 /**
  * Apply Koa2 OpenAPI 3 Request Validation Layer
  * @param {Koa} app Koa app instance
  * @param {(String|Object)} apiSpecOrUri Provide either a uri or a swagger spec object
  * @param {Object} [options] Optional options object
- * @param {Boolean} [mergeRemoteRefs=true] Should any remote refs be merged to local definitions?
- * @param {Boolean} [renderDocs=true] Should a swagger ui be rendered?
+ * @param {Boolean} [options.mergeRemoteRefs=true] Should any remote refs be merged to local definitions?
+ * @param {Boolean} [options.renderDocs=true] Should a swagger ui be rendered?
+ * @param {String} [options.docsPath='/docs'] Docs path
  */
-async function Koa2OA3(app, apiSpecOrUri, {
-  // TODO: more in depth optiosn for rendering ui
+async function koa2OA3 (app, apiSpecOrUri, {
   mergeRemoteRefs,
-  renderDocs
+  renderDocs,
+  docsPath
   // TODO: more in depth options for request validation
 } = defaultOptions) {
-  let isValidUri = true;
   let apiSpec;
 
   // get api specification
@@ -39,34 +52,42 @@ async function Koa2OA3(app, apiSpecOrUri, {
   } else if (isObject(apiSpecOrUri)) {
     // just set the apiSpec
     apiSpec = apiSpecOrUri;
-  } else if (isValidUri) {
+  } else if (validateUrl(apiSpecOrUri)) {
     // fetch api spec from uri
     const res = await rpn(apiSpecOrUri);
-    apiSpec = JSON.parse(rawApiSpec);
+    apiSpec = JSON.parse(res);
   } else {
     // invalid options
     throw new Error('Invalid api spec or api spec uri provied');
   }
 
-  /**
-   * Determine the swagger doc url to use for the ui layer
-   */
-  const determineSwaggerDocUrl = () => {
-    // TODO: eventually this could be a remote url or a local url
-    // if local url we will need to have koa render the api spec json
-    // in a get request somewhere
-    return apiSpecUri;
-  }
-
   // only add ui layer if render docs option is true
   if (renderDocs) {
+    // determine the spec path
+    const specPath = urlJoin('/', docsPath, '/spec');
+
+    // add docs api spec
+    app.use(route.get(specPath, (ctx) => {
+      ctx.body = apiSpec;
+    }));
+
     // apply ui layer
     app.use(koaSwagger({
-      // title: apiSpec.info.title,
-      hideTopbar: true,
-      swaggerOptions: {
-        url: determineSwaggerDocUrl()
-      }
+      title: apiSpec.info.title, // page title
+      oauthOptions: {}, // passed to initOAuth
+      swaggerOptions: { // passed to SwaggerUi()
+        // dom_id: 'swagger-ui-container',
+        url: specPath // link to swagger.json
+        // supportedSubmitMethods: ['get', 'post', 'put', 'delete', 'patch'],
+        // docExpansion: 'none',
+        // jsonEditor: false,
+        // defaultModelRendering: 'schema',
+        // showRequestHeaders: false,
+        // swaggerVersion: 'x.x.x' // read from package.json,
+
+      },
+      routePrefix: urlJoin('/', docsPath), // route where the view is returned
+      hideTopbar: true // hide swagger top bar
     }));
   }
 
