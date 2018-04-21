@@ -11,13 +11,6 @@ const { oas } = require('./src/oas3-koa-mw');
 // Exports
 module.exports = koa2OA3;
 
-// These are the default options for Koa2OA3
-const defaultOptions = {
-  mergeRemoteRefs: false,
-  renderDocs: true,
-  docsPath: '/docs'
-};
-
 /**
  * Validate URI
  * @param {String} value
@@ -38,11 +31,11 @@ function validateUrl (value) {
  * @param {String} [options.docsPath='/docs'] Docs path
  */
 async function koa2OA3 (app, apiSpecOrUri, {
-  mergeRemoteRefs,
-  renderDocs,
-  docsPath
+  mergeRemoteRefs = false,
+  renderDocs = true,
+  docsPath = '/docs'
   // TODO: more in depth options for request validation
-} = defaultOptions) {
+}) {
   let apiSpec;
 
   // get api specification
