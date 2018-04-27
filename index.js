@@ -6,7 +6,7 @@ const rpn = require('request-promise-native');
 const { isObject, isString } = require('lodash');
 const route = require('koa-route');
 const urlJoin = require('url-join');
-const { oas } = require('./src/oas3-koa-mw');
+const { oas } = require('./src/oas');
 
 // Exports
 module.exports = koa2OA3;
@@ -33,7 +33,23 @@ function validateUrl (value) {
 async function koa2OA3 (app, apiSpecOrUri, {
   mergeRemoteRefs = false,
   renderDocs = true,
-  docsPath = '/docs'
+  docsPath = '/docs',
+  docsSuupportedSubmitMethods = ['get', 'post', 'put', 'delete', 'patch'],
+  docsJsonEditor = false,
+  docsShowRequestHeaders = false,
+  docsHideTopbar = true,
+  docsAuthOptions = {},
+  docDdefaultModelRendering = 'schema',
+  handleError = ({ code, location, message }) => {
+    return {
+      errors: [{
+        status: `${code}`,
+        title: 'Request Validation Error',
+        detail: message,
+        source: location
+      }]
+    };
+  }
   // TODO: more in depth options for request validation
 }) {
   let apiSpec;
@@ -67,23 +83,21 @@ async function koa2OA3 (app, apiSpecOrUri, {
     // apply ui layer
     app.use(koaSwagger({
       title: apiSpec.info.title, // page title
-      oauthOptions: {}, // passed to initOAuth
+      oauthOptions: docsAuthOptions, // passed to initOAuth
       swaggerOptions: { // passed to SwaggerUi()
-        // dom_id: 'swagger-ui-container',
-        url: specPath // link to swagger.json
-        // supportedSubmitMethods: ['get', 'post', 'put', 'delete', 'patch'],
-        // docExpansion: 'none',
-        // jsonEditor: false,
-        // defaultModelRendering: 'schema',
-        // showRequestHeaders: false,
-        // swaggerVersion: 'x.x.x' // read from package.json,
-
+        url: specPath, // link to swagger.json
+        supportedSubmitMethods: docsSuupportedSubmitMethods,
+        jsonEditor: docsJsonEditor,
+        defaultModelRendering: docDdefaultModelRendering,
+        showRequestHeaders: docsShowRequestHeaders
       },
       routePrefix: urlJoin('/', docsPath), // route where the view is returned
-      hideTopbar: true // hide swagger top bar
+      hideTopbar: docsHideTopbar // hide swagger top bar
     }));
   }
 
   // apply request validation
-  app.use(oas(apiSpec));
+  app.use(oas(apiSpec, {
+    handleError
+  }));
 }
