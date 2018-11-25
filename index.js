@@ -99,6 +99,6 @@ async function koa2OA3 (app, apiSpecOrUri, {
 
   // apply request validation
   app.use(oas(apiSpec, {
-    handleError
+    handleError, rewrite,
   }));
 }
