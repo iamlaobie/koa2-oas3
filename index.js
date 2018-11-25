@@ -40,6 +40,7 @@ async function koa2OA3 (app, apiSpecOrUri, {
   docsHideTopbar = true,
   docsAuthOptions = {},
   docDdefaultModelRendering = 'schema',
+  rewrite = p => p,
   handleError = ({ code, location, message }) => {
     return {
       errors: [{
