@@ -6,13 +6,14 @@ const {
 } = require('oas3-chow-chow');
 
 exports.oas = function oas (apiSpec, {
-  handleError
+  handleError,
+  rewrite = p => p,
 }) {
   const compiled = new ChowChow(apiSpec);
 
   return async (ctx, next) => {
     try {
-      compiled.validateRequest(ctx.path, {
+      compiled.validateRequest(rewrite(ctx.path), {
         method: ctx.request.method,
         header: ctx.request.header,
         query: ctx.request.query,
